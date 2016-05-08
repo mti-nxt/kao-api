@@ -1,0 +1,103 @@
+---
+swagger: "2.0"
+info:
+  description: |
+    Tensor Flow を使って顔画像を分類するサンプルAPI
+  version: "0.0.1"
+  title: "TensorFlow 顔分類API"
+basePath: "/api"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /face:
+    post:
+      tags: ["face"]
+      description: "顔画像データから分類結果を得る"
+      x-swagger-router-controller: "controllers.face"
+      operationId: "classify"
+      parameters:
+        - name: data
+          in: "body"
+          description: "顔データのバイナリ"
+          required: true
+          schema:
+            $ref: "#/definitions/FaceData"
+      responses:
+        200:
+          description: "分類結果"
+          schema:
+            $ref: "#/definitions/ClassifiedResult"        
+        default:
+          description: "error payload"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+  /face/{sampleId}:
+    get:
+      tags: ["face"]
+      description: "サンプル顔画像のIDを指定して判定結果を得る"
+      x-swagger-router-controller: "controllers.face"
+      operationId: "classify_sample"
+      parameters:
+        - name: "sampleId"
+          in: "path"
+          description: "サンプル顔画像のID"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "分類結果"
+          schema:
+            $ref: "#/definitions/ClassifiedResult"
+        default:
+          description: "error payload"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+definitions:
+  FaceData:
+    type: object
+    required:
+      - binary
+    properties:
+      binary:
+        type: string
+        format: byte
+        description: "顔画像のバイナリデータをBase64エンコーディングしたもの"
+  ClassifiedResult:
+    type: "object"
+    required:
+      - host_rate
+      - jhonnys_rate
+      - villain_rate
+      - yoshimoto_rate
+    properties:
+      host_rate:
+        type: number
+        format: double
+        description: "ホストっぽい度"
+      jhonnys_rate:
+        type: number
+        format: double
+        description: "ジャニーズっぽい度"
+      villain_rate:
+        type: number
+        format: double
+        description: "悪人っぽい度"
+      yoshimoto_rate:
+        type: number
+        format: double
+        description: "吉本っぽい度"
+  ErrorModel:
+    type: "object"
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
