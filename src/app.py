@@ -6,6 +6,10 @@ import tensorflow as tf
 
 app = Flask(__name__)
 
+@app.route("/healthcheck")
+def healthcheck() -> str:
+  return "OK"
+
 @app.route("/api/face", methods=["POST"])
 def classify() -> str:
   result = {
