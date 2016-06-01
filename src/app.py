@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from flask import Flask
 from flask import jsonify
@@ -7,11 +8,11 @@ import tensorflow as tf
 app = Flask(__name__)
 
 @app.route("/healthcheck")
-def healthcheck() -> str:
+def healthcheck():
   return "OK"
 
 @app.route("/api/face", methods=["POST"])
-def classify() -> str:
+def classify():
   result = {
     "host_rate": 0.9,
     "villain_rate": 0.99,
@@ -21,7 +22,7 @@ def classify() -> str:
   return jsonify(result)
 
 @app.route("/api/face/<int:sampleId>", methods=["GET"])
-def classify_sample(sampleId) -> str:
+def classify_sample(sampleId):
   a = tf.constant(10)
   b = tf.constant(32)
   with tf.Session() as sess:
