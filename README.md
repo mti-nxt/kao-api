@@ -1,10 +1,7 @@
-# TensorFlowに[Connexion](https://github.com/zalando/connexion)ベースのAPIでアクセスするベース
+# TensorFlowに[Flask](http://flask.pocoo.org/)ベースのAPIでアクセスするベース
 
-* [Connexion](https://github.com/zalando/connexion)というAPIフレームワークを利用しています
-    * [Flask](http://flask.pocoo.org/)をベースにしたフレームワークです
-    * Flaskではアノテーションでルーティングしますが、Connexionは[Swagger](http://swagger.io/getting-started/)の定義を元にルテーティングしてくれます。
-        * 引数のチェックなどもある程度やってくれます
-    * [swagger-codegen](https://github.com/swagger-api/swagger-codegen) で生成されたものに手を加えました
+*  [Flask](http://flask.pocoo.org/)というWEBフレームワークを利用しています
+    * swagger.ymlは connexionベースでやろうとしていた時の名残で飾りです。
 * 基本的には[docker-compose](https://docs.docker.com/compose/)で起動する想定になっています
     * ローカルにTensorflowを`pip install`しても動かせると思います
 * とりあえず適当に``tensorflow.Session().run()``だけしてみています
@@ -18,9 +15,7 @@
 ├── docker-compose.yml    ...とりあえずローカルで動かすためのcompose定義
 ├── dockerignore
 └── src                   ...pythonのソースコードを格納する
-    ├── app.py
-    ├── controllers       ...各APIの中身を記述する
-    └── swagger.yaml      ...APIインターフェース定義
+    └── app.py            ...起動ファイル。（今はベタにここに全部書いてあります）
 ```
 
 ## 使い方
@@ -35,30 +30,30 @@ $ docker-compose up
 
 ### 止め方
 
-`Ctrl+C`で止まることもあれば止まらないことも・・・（謎）  
+`Ctrl+C`で止まった風に見えますが、
 
 ```
 $ docker-compose down
 ```
 
-が確実です。
+で、止めてください。
 
 
 ## アーキテクチャメモ
 
 ### Dockerベース
 
-最終的にAmazonECSで動作させるつもりなのでDockerイメージで動作するように組んであります。 
+デプロイが楽なのでAmazonECSでやりたかったのですが、なぜかECSからTensorFlow入のイメージを起動するとクッソ遅いという問題に突き当たり、諦めました。
+でもやっぱ周辺ライブラリのインストールがめんどくさいので非ECSなDockerベースでやるつもり。
+
 See: [Dockerfile](Dockerfile)
 
-### Python3ベース
+### Python2ベース
 
-ConnexionはPython2.7でも動くと書いてあるのですが、実際には動かず。  
-Googleから公式に配布されているDockerイメージ[gcr.io/tensorflow/tensorflow](https://www.tensorflow.org/versions/r0.8/get_started/os_setup.html#docker-installation)はPython2.7ベースでConnexionが動かず。
+Googleから公式に配布されているDockerイメージ[gcr.io/tensorflow/tensorflow](https://www.tensorflow.org/versions/r0.8/get_started/os_setup.html#docker-installation)はPython2.7ベースなのでそれに乗っかる。
 
-仕方がないので[公式のDockerfile](https://github.com/tensorflow/tensorflow/blob/r0.8/tensorflow/tools/docker/Dockerfile)を[フォークしてPython3ベースのイメージを自前で作成](https://hub.docker.com/r/newgyu/tensorflow/)。  
-(Python3.5ではなく、3.4なのはベースイメージでapt-get installで入れられるバージョンが3.4だったからです)
 
 ### src以下をコンテナにマウント
 
 `./src` -> `/opt/tensor-api` のマウントを[docker-compose.yml](docker-compose.yml)に定義してあります。
+ローカルで動かすときにいちいち`docker-compose build`するの面倒かなーと思って。
