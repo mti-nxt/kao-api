@@ -1,6 +1,7 @@
-tensor-api:
+kao-api:
   build: .
   volumes: 
+   # プログラム変更するたびにビルドしなくて良いようにローカルファイルをボリュームマウントする
     - "./src:/opt/tensor-api"
   ports: 
     - "8888:8888"
