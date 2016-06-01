@@ -5,4 +5,4 @@ tensor-api:
   ports: 
     - "8888:8888"
     - "8080:8080"
-  command: python3 app.py
+  command: python app.py
