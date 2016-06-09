@@ -3,7 +3,10 @@ kao-api:
   volumes: 
    # プログラム変更するたびにビルドしなくて良いようにローカルファイルをボリュームマウントする
     - "./src:/opt/tensor-api"
-  ports: 
-    - "8888:8888"
+
+nginx:
+  build: ./nginx
+  volumes_from:
+    - kao-api
+  ports:
     - "8080:8080"
-  command: python app.py
