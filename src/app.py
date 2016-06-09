@@ -3,7 +3,7 @@
 
 from flask import Flask
 from flask import jsonify
-from flask.ext.cors import CORS
+from flask_cors import CORS
 import tensorflow as tf
 
 app = Flask(__name__)
