@@ -3,9 +3,11 @@
 
 from flask import Flask
 from flask import jsonify
+from flask.ext.cors import CORS
 import tensorflow as tf
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/healthcheck")
 def healthcheck():
@@ -37,4 +39,3 @@ def classify_sample(sampleId):
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=8080)
- 
