@@ -11,6 +11,8 @@ CORS(app)
 
 sess = tf.Session()
 
+sess = tf.Session()
+
 @app.route("/healthcheck")
 def healthcheck():
   return "OK"
