@@ -1,10 +1,11 @@
 FROM tensorflow/tensorflow:0.8.0
 RUN apt-get update && apt-get install -y language-pack-ja && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN pip install flask
-RUN pip install flask-cors
+RUN pip install flask flask-cors gunicorn
 ENV LANG=ja_JP.UTF-8
 COPY ./src /opt/tensor-api
-EXPOSE 8080
+
+VOLUME /tmp/gunicorn
+
 WORKDIR /opt/tensor-api
-CMD python app.py
+CMD gunicorn app:app -c guniconf.py

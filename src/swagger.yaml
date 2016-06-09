@@ -2,7 +2,8 @@
 swagger: "2.0"
 info:
   description: |
-    Tensor Flow を使って顔画像を分類するサンプルAPI
+    Tensor Flow を使って顔画像を分類するサンプルAPI  
+    [Connextion](https://pypi.python.org/pypi/connexion)を諦めたのでもはやただの参考資料扱い
   version: "0.0.1"
   title: "TensorFlow 顔分類API"
 basePath: "/api"
@@ -30,7 +31,7 @@ paths:
         200:
           description: "分類結果"
           schema:
-            $ref: "#/definitions/ClassifiedResult"        
+            $ref: "#/definitions/ClassifiedResult"
         default:
           description: "error payload"
           schema:
