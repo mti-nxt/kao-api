@@ -12,6 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 sess = tf.Session()
+#TODO ここでチェックポイントファイルをセッションにロードするやつを書く
 
 @app.route("/healthcheck")
 def healthcheck():
@@ -19,6 +20,7 @@ def healthcheck():
 
 @app.route("/api/face", methods=["POST"])
 def classify():
+    #TODO ここでチェックポイントファイルを使って判定する処理を書く
   result = {
     "host_rate": 0.9,
     "villain_rate": 0.99,
@@ -42,6 +44,7 @@ def classify_sample(sampleId):
 
 @app.route("/api/chkpoint", methods=["PUT"])
 def reload_chkpoint():
+    #TODO ここでもチェックポイントファイルをリロードする
   result = subprocess.check_call("aws s3 cp s3://kao-class-dev/kao-api %s/data --recursive" % os.getcwd(), shell=True)
   return "refreshed"
 
