@@ -3,9 +3,12 @@
 
 from flask import Flask
 from flask import jsonify
+from flask import request
 from flask_cors import CORS
+from datetime import datetime
 import tensorflow as tf
 import subprocess
+import base64
 import os
 
 app = Flask(__name__)
@@ -20,13 +23,21 @@ def healthcheck():
 
 @app.route("/api/face", methods=["POST"])
 def classify():
-    #TODO ここでチェックポイントファイルを使って判定する処理を書く
+  data = request.data
+  tmpPath = "/tmp/image/" + datetime.now().strftime('%s') + ".jpg"
+  tmp = open(tmpPath,"w")
+  tmp.write(base64.b64decode(data))
+  tmp.close()
+  
+  #TODO ここでチェックポイントファイルを使って判定する処理を書く(画像はtmpPath)
   result = {
     "host_rate": 0.9,
     "villain_rate": 0.99,
     "jhonnys_rate": 0.1,
-    "yoshimoto_rate": 0.05
+    "yoshimoto_rate": 0.05,
   }
+  # 解析した後、tmpの画像は削除する
+  os.remove(tmpPath)
   return jsonify(result)
 
 @app.route("/api/face/<int:sampleId>", methods=["GET"])
