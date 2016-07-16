@@ -62,5 +62,7 @@ Googleから公式に配布されているDockerイメージ[gcr.io/tensorflow/t
 ローカルで動かすときにいちいち`docker-compose build`するの面倒かなーと思って。
 
 ## apiテストするときのコマンド
-base64 -i input.jpg -o ./sampledata
-curl -X POST -H "Content-Type: text/plain" -d @sampledata 'localhost:8080/api/face
+```
+$ base64 -i input.jpg -o ./sampledata
+$ curl -X POST -H "Content-Type: text/plain" -d @sampledata localhost:8080/api/face
+```

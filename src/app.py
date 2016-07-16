@@ -34,7 +34,7 @@ def classify():
     "host_rate": 0.9,
     "villain_rate": 0.99,
     "jhonnys_rate": 0.1,
-    "yoshimoto_rate": 0.05,
+    "yoshimoto_rate": 0.05
   }
   # 解析した後、tmpの画像は削除する
   os.remove(tmpPath)
