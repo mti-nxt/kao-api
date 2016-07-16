@@ -4,6 +4,7 @@ kao-api:
    # プログラム変更するたびにビルドしなくて良いようにローカルファイルをボリュームマウントする
     - "./src:/opt/tensor-api"
     - "./data:/opt/tensor-api/data"
+    - "./image:/tmp/image"
 nginx:
   build: ./nginx
   volumes_from:
