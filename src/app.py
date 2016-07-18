@@ -16,7 +16,6 @@ app = Flask(__name__)
 CORS(app)
 
 sess = tf.Session()
-#TODO ここでチェックポイントファイルをセッションにロードするやつを書く
 
 @app.route("/healthcheck")
 def healthcheck():
@@ -30,8 +29,9 @@ def classify():
   tmp.write(base64.b64decode(data))
   tmp.close()
   
-  #ここでチェックポイントファイルを使って判定する処理を書く(画像はtmpPath)
-  sp = cifar10.calc_similarity(tmpPath,)
+  #チェックポイントファイルを使って判定する処理(画像はtmpPath　チェックポイントはmodel.ckpt)
+  #TODOそういえばckptファイルの名前どうしよう　暫定的にmodel.ckptで
+  sp = cifar10.calc_similarity(tmpPath,"./data/model.ckpt") #結果は配列データ 
   result = {
     "host_rate": sp[0],
     "villain_rate": sp[1],
@@ -57,7 +57,6 @@ def classify_sample(sampleId):
 
 @app.route("/api/chkpoint", methods=["PUT"])
 def reload_chkpoint():
-    #TODO ここでもチェックポイントファイルをリロードする
   result = subprocess.check_call("aws s3 cp s3://kao-class-dev/kao-api %s/data --recursive" % os.getcwd(), shell=True)
   return "refreshed"
 
