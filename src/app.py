@@ -7,6 +7,7 @@ from flask import request
 from flask_cors import CORS
 from datetime import datetime
 import tensorflow as tf
+import tensorflow.cifar10 as cifar10
 import subprocess
 import base64
 import os
@@ -29,12 +30,13 @@ def classify():
   tmp.write(base64.b64decode(data))
   tmp.close()
   
-  #TODO ここでチェックポイントファイルを使って判定する処理を書く(画像はtmpPath)
+  #ここでチェックポイントファイルを使って判定する処理を書く(画像はtmpPath)
+  sp = cifar10.calc_similarity(tmpPath,)
   result = {
-    "host_rate": 0.9,
-    "villain_rate": 0.99,
-    "jhonnys_rate": 0.1,
-    "yoshimoto_rate": 0.05
+    "host_rate": sp[0],
+    "villain_rate": sp[1],
+    "jhonnys_rate": sp[2],
+    "yoshimoto_rate": sp[3]
   }
   # 解析した後、tmpの画像は削除する
   os.remove(tmpPath)

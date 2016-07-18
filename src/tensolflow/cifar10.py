@@ -69,9 +69,10 @@ def inference(images_placeholder, keep_prob):
 
     return y_conv
 
+#　こいつをapiで呼びだす！
 def calc_similarity(image_filename, ckpt_filename):
     # データを読み込んで28x28に縮小
-    jpeg_r = tf.read_file(filename)
+    jpeg_r = tf.read_file(image_filename)
     decode_image = tf.image.decode_jpeg(jpeg_r, channels=3)
     resize_image = tf.image.resize_images(decode_image, IMAGE_SIZE, IMAGE_SIZE)
     # 一列にした後、0-1のfloat値にする
@@ -89,11 +90,10 @@ def calc_similarity(image_filename, ckpt_filename):
     sess.run(tf.initialize_all_variables())
     saver.restore(sess, ckpt_filename)
 
-    pred = np.argmax(logits.eval(feed_dict={ 
-        images_placeholder: [test_image],
-        keep_prob: 1.0 })[0])
+    #各クラスの推定値の配列　桁がだいぶ違うのでスケール調整が必要な感じ　とりあえずこのままでも結果は出力される
+    pred = logits.eval(feed_dict={images_placeholder: [test_image], keep_prob: 1.0})[0]
     return pred
 
-
+#このファイル単体でもテスト確認できるようにmainの場合はtest.jpgの判定を行ない、4出力の値を表示する
 if __name__ == '__main__':
-    print calc_similarity("./test.jpg","model.ckpt")
+    print(calc_similarity("./test.jpg","model.ckpt"))
