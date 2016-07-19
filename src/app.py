@@ -6,8 +6,10 @@ from flask import jsonify
 from flask import request
 from flask_cors import CORS
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
+import logging
 import tensorflow as tf
-import tensorflow.cifar10 as cifar10
+import tensolflow.cifar10 as cifar10
 import subprocess
 import base64
 import os
@@ -31,12 +33,13 @@ def classify():
   
   #チェックポイントファイルを使って判定する処理(画像はtmpPath　チェックポイントはmodel.ckpt)
   #TODOそういえばckptファイルの名前どうしよう　暫定的にmodel.ckptで
-  sp = cifar10.calc_similarity(tmpPath,"./data/model.ckpt") #結果は配列データ 
+  sp = cifar10.calc_similarity(tmpPath,"./data/model.ckpt") #結果は配列データ
+ 
   result = {
-    "host_rate": sp[0],
-    "villain_rate": sp[1],
-    "jhonnys_rate": sp[2],
-    "yoshimoto_rate": sp[3]
+    "host_rate": "%1.5f" % sp[0],
+    "villain_rate": "%1.5f" % sp[1],
+    "jhonnys_rate": "%1.5f" % sp[2],
+    "yoshimoto_rate": "%1.5f" % sp[3]
   }
   # 解析した後、tmpの画像は削除する
   os.remove(tmpPath)
@@ -61,4 +64,4 @@ def reload_chkpoint():
   return "refreshed"
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=8080)
+　app.run(host="0.0.0.0", port=8080)

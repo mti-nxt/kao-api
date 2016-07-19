@@ -90,3 +90,6 @@ ENV/
 
 # for mac
 *.DS_Store
+
+# tensorflow
+*.ckpt
