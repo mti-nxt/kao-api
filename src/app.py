@@ -3,9 +3,15 @@
 
 from flask import Flask
 from flask import jsonify
+from flask import request
 from flask_cors import CORS
+from datetime import datetime
+from logging.handlers import RotatingFileHandler
+import logging
 import tensorflow as tf
+import tensolflow.cifar10 as cifar10
 import subprocess
+import base64
 import os
 
 app = Flask(__name__)
@@ -19,12 +25,24 @@ def healthcheck():
 
 @app.route("/api/face", methods=["POST"])
 def classify():
+  data = request.data
+  tmpPath = "/tmp/image/" + datetime.now().strftime('%s') + ".jpg"
+  tmp = open(tmpPath,"w")
+  tmp.write(base64.b64decode(data))
+  tmp.close()
+  
+  #チェックポイントファイルを使って判定する処理(画像はtmpPath　チェックポイントはmodel.ckpt)
+  #TODOそういえばckptファイルの名前どうしよう　暫定的にmodel.ckptで
+  sp = cifar10.calc_similarity(tmpPath,"./data/model.ckpt") #結果は配列データ
+ 
   result = {
-    "host_rate": 0.9,
-    "villain_rate": 0.99,
-    "jhonnys_rate": 0.1,
-    "yoshimoto_rate": 0.05
+    "host_rate": "%1.5f" % sp[0],
+    "villain_rate": "%1.5f" % sp[1],
+    "jhonnys_rate": "%1.5f" % sp[2],
+    "yoshimoto_rate": "%1.5f" % sp[3]
   }
+  # 解析した後、tmpの画像は削除する
+  os.remove(tmpPath)
   return jsonify(result)
 
 @app.route("/api/face/<int:sampleId>", methods=["GET"])
@@ -46,4 +64,4 @@ def reload_chkpoint():
   return "refreshed"
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=8080)
+　app.run(host="0.0.0.0", port=8080)
