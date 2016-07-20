@@ -26,7 +26,7 @@ def healthcheck():
 
 @app.route("/api/face", methods=["POST"])
 def classify():
-  data = request.json["binary"]
+  data = request.json["binary"].split(",")[1]
   tmpPath = "/tmp/image/" + datetime.now().strftime('%s') + ".jpg"
   tmp = open(tmpPath,"w")
   tmp.write(base64.b64decode(data))
