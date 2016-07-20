@@ -3,6 +3,7 @@
 
 from flask import Flask
 from flask import jsonify
+from flask import json
 from flask import request
 from flask_cors import CORS
 from datetime import datetime
@@ -25,7 +26,7 @@ def healthcheck():
 
 @app.route("/api/face", methods=["POST"])
 def classify():
-  data = request.data
+  data = request.json["binary"]
   tmpPath = "/tmp/image/" + datetime.now().strftime('%s') + ".jpg"
   tmp = open(tmpPath,"w")
   tmp.write(base64.b64decode(data))
