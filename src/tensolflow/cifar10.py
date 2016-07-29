@@ -69,6 +69,19 @@ def inference(images_placeholder, keep_prob):
 
     return y_conv
 
+#変数の設定
+images_placeholder = tf.placeholder("float", shape=(None, IMAGE_PIXELS))
+labels_placeholder = tf.placeholder("float", shape=(None, NUM_CLASSES))
+keep_prob = tf.placeholder("float")
+
+logits = inference(images_placeholder, keep_prob)
+
+sess = tf.InteractiveSession()
+#Saverを使ってチェックポイントファイルをロード
+saver = tf.train.Saver()
+sess.run(tf.initialize_all_variables())
+saver.restore(sess, "./data/model.ckpt")
+
 #　こいつをapiで呼びだす！
 def calc_similarity(image_filename, ckpt_filename):
     # データを読み込んで28x28に縮小
@@ -78,18 +91,7 @@ def calc_similarity(image_filename, ckpt_filename):
     # 一列にした後、0-1のfloat値にする
     reshape_image = tf.reshape(resize_image, [-1])
     test_image = tf.Session().run(reshape_image).astype(np.float32) / 255.0
-    # 必要な変数を作成
-    images_placeholder = tf.placeholder("float", shape=(None, IMAGE_PIXELS))
-    labels_placeholder = tf.placeholder("float", shape=(None, NUM_CLASSES))
-    keep_prob = tf.placeholder("float")
-
-    logits = inference(images_placeholder, keep_prob)
-    sess = tf.InteractiveSession()
-    #Saverを使ってチェックポイントファイルをロード
-    saver = tf.train.Saver()
-    sess.run(tf.initialize_all_variables())
-    saver.restore(sess, ckpt_filename)
-
+    
     #各クラスの推定値の配列　桁がだいぶ違うのでスケール調整が必要な感じ　とりあえずこのままでも結果は出力される
     pred = logits.eval(feed_dict={images_placeholder: [test_image], keep_prob: 1.0})[0]
     return pred
